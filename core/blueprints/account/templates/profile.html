@@ -1,0 +1,15 @@
+{% extends 'layout.html' %}
+{% import '_form.html' as macro %}
+
+{% block content %}
+	
+	<div class="card">
+		<div class="card-content">
+			<p class="title">{{user.username}}</p>
+			<p class="subtitle">Edit Your Profile</p>
+			{{ user.member_since }}
+		
+			{{ macro.render_form(form, action_url=url_for('account.profile', username=user.username), action_text='Save') }}
+		</div>
+	</div>
+{% endblock %}

@@ -1,0 +1,7 @@
+{% extends 'layout.html' %}
+{% import '_form.html' as macro %}
+
+{% block content %}
+	<h1>Join</h1>
+	{{ macro.render_form(form, action_url=url_for('account.register')) }}
+{% endblock %}

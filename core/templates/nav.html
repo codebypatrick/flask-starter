@@ -1,0 +1,15 @@
+<nav class="navbar">
+	<div class="container">
+		<div class="navbar-menu is-active">
+			<div class="navbar-end">
+				<a class="navbar-item" href="/">Home</a>
+				{% if current_user.is_authenticated %}
+					<a class="navbar-item" href="{{url_for('account.logout')}}">Logout</a>
+				{% else %}
+					<a class="navbar-item" href="{{url_for('account.login')}}">Login</a>
+					<a class="navbar-item" href="{{url_for('account.register')}}">Join</a>
+				{% endif %}
+			</div>
+		</div>
+	</div>
+</nav>

@@ -1,0 +1,12 @@
+{% extends 'layout.html' %}
+
+{% block content %}
+<h1 class="subtitle">{{post.title}}</h1>
+
+{{post.body | safe}}
+
+{% if current_user.id == post.author_id %}
+<p><a class="button is-info" href="{{url_for('post.update', post_id=post.id)}}">Edit</a></p>
+{% endif %}
+
+{% endblock %}

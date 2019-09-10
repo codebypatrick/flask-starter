@@ -1,0 +1,14 @@
+{% extends 'layout.html' %}
+{% import '_form.html' as macro %}
+
+{% block content %}
+	
+	<div class="card">
+		<div class="card-content">
+			<p class="card-header-title">Edit Post</p>
+			{{ macro.render_form(form, action_url=url_for('post.update', post_id=post.id)) }}
+		</div>
+	</div>
+
+	
+{% endblock %}
