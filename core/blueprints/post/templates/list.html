@@ -1,5 +1,6 @@
 {% extends '_layouts/layout.html' %}
 {% import '_macros/post.html' as macros %}
+{% import '_macros/pagination.html' as pager %}
 
 {% block content %}
 	<div class="card">
@@ -9,12 +10,10 @@
 				
 				
 		</header>
-
-				
-		</header>
 		<div class="card-table">
 			<div class="content">
 				{{ macros.render_posts_table(posts.items)}}
+				{{ pager.render_pagination(posts, '.list')}}
 			</div>
 		</div>
 	</div>
