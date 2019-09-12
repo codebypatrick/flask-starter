@@ -9,8 +9,9 @@ from ...models import Post
 @login_required
 def list():
     #posts = Post.query.order_by(Post.created.desc()).paginate(page, 20, False)
-    posts = Post.query.all()
-    return render_template('list.html', posts=posts)
+    page = request.args.get('page', type=int)
+    pagination = Post.query.order_by(Post.created.desc()).paginate(page, 10, error_out=False)
+    return render_template('list.html', posts=pagination)
 
 @post.route('/create', methods=['GET', 'POST'])
 @login_required

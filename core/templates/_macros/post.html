@@ -1,0 +1,26 @@
+{# Render Posts  #}
+{% macro render_posts_table(posts) %}
+<table class="table is-fullwidth is-striped">
+	<tbody>
+		{% for post in posts %}
+			<tr>
+				<td>{{post.title}} </td>
+				<td>{{post.body | truncate(20)}}</td>
+				<td width="5%">
+					<a class="button is-small is-info" 
+					   href="{{url_for('post.update', post_id=post.id)}}">Edit</a>
+				</td>
+				<td width="5%">
+					<form 
+						action="{{ url_for('post.delete', post_id=post.id)}}"
+						method="post">
+						<input type="hidden" name="post_id" value="{{post.id}}">
+						<button class="button is-small is-danger" href="">Delete</button>
+					</form>
+				</td>
+			</tr>
+		{% endfor %}
+	</tbody>
+</table>
+
+{% endmacro %}

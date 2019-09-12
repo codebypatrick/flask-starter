@@ -51,7 +51,7 @@
 {% endmacro %}
 
 {# Render Form #}
-{% macro render_form(form, action_url='', action_text='Submit', btn_class='is-primary') %}
+{% macro render_form(form, action_url='', action_text='Submit', button_class='is-primary') %}
 	<form action="{{action_url}}" method='POST' role="form" novalidate>
 		{{form.hidden_tag() if form.hidden_tag}}
 
@@ -74,7 +74,7 @@
 				{{ render_field(f, label_visible=False) }}
 			{% endif %}
 			{% endfor %}
-			<button class="button  {{btn_class}}">{{action_text}}</button>
+			<button class="button  {{button_class}}">{{action_text}}</button>
 		{% endif %}
 	</form>
 {% endmacro %}

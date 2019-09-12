@@ -28,8 +28,8 @@ def login():
 
     return render_template('login.html', form=form)
 
-@account.route('/register', methods=['GET', 'POST'])
-def register():
+@account.route('/join', methods=['GET', 'POST'])
+def join():
     form = RegisterForm()
 
     if form.validate_on_submit():
@@ -43,6 +43,10 @@ def register():
         return redirect(url_for('account.login'))
 
     return render_template('join.html', form=form)
+
+@account.route('/reset-password')
+def reset_password():
+    return 'reset password'
 
 @account.route('/logout')
 @login_required

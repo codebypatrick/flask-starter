@@ -1,5 +1,5 @@
-{% extends 'layout.html' %}
-{% import '_form.html' as macro %}
+{% extends '_layouts/layout.html' %}
+{% import '_marcos/form.html' as macros %}
 
 {% block content %}
 	
@@ -9,7 +9,7 @@
 			<p class="subtitle">Edit Your Profile</p>
 			{{ user.member_since }}
 		
-			{{ macro.render_form(form, action_url=url_for('account.profile', username=user.username), action_text='Save') }}
+			{{ macros.render_form(form, action_url=url_for('account.profile', username=user.username), action_text='Save') }}
 		</div>
 	</div>
 {% endblock %}

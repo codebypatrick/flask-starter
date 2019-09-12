@@ -1,12 +1,12 @@
-{% extends 'layout.html' %}
-{% import '_form.html' as macro %}
+{% extends '_layouts/layout.html' %}
+{% import '_macros/form.html' as macros %}
 
 {% block content %}
 	
 	<div class="card">
 		<div class="card-content">
 			<p class="subtitle">New Post</p>
-			{{ macro.render_form(form, action_url=url_for('post.create')) }}
+			{{ macros.render_form(form, action_url=url_for('post.create')) }}
 		</div>
 	</div>
 
