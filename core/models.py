@@ -2,6 +2,8 @@ from .extentions import db, login_manager
 from flask_login import UserMixin
 from werkzeug.security import generate_password_hash, check_password_hash
 from datetime import datetime
+from markdown import markdown
+import bleach
 
 # Define base model for other tables to inherit
 class Base(db.Model):
@@ -52,6 +54,7 @@ class User(UserMixin, Base):
         db.session.add(self)
         db.session.commit()
 
+
 # load user in login manager
 @login_manager.user_loader
 def load_user(user_id):
@@ -68,6 +71,7 @@ class Post(Base):
 
     title = db.Column(db.String(255))
     body = db.Column(db.Text())
+    body_html = db.Column(db.Text())
     author_id = db.Column(db.Integer, db.ForeignKey('users.id'))
     comments = db.relationship('Comment', backref='post', lazy='dynamic')
     tags = db.relationship('Tag',
@@ -78,7 +82,21 @@ class Post(Base):
 
     #def __init__(self, title, body):
         #self.title = title
-        #self.body = body
+        #self.body = bod
+
+    @staticmethod
+    def on_changed_body(target, value, oldvalue, initiator):
+        allowed_tags = ['a', 'abbr', 'p', 'h1', 'h2', 'h3', 'code', 'em',
+                'strong', 'pre', 'ul']
+        # add more allowed tags
+
+        target.body_html = bleach.linkify(
+                bleach.clean(markdown(value, output_format='html'), tags=allowed_tags, strip=True)
+                )
+
+
+#Event listener on post body
+db.event.listen(Post.body, 'set', Post.on_changed_body)
 
 
 class Comment(Base):

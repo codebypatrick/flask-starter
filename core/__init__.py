@@ -1,7 +1,7 @@
 from flask import Flask
 
 from .config import config
-from .extentions import (db, login_manager)
+from .extentions import db, login_manager
 
 def create_app(config_name='development'):
     app = Flask(__name__)
@@ -34,30 +34,4 @@ def extentions(app):
 
     #recreate_db(app)
 
-    #create db
-    #with app.app_context():
-        #from .models import User, Post, Comment, Tag, tags
-        #db.create_all()
-        #bob = User(username="bob", email="bob@gmail.com", password="123")
-        #bob.save()
-        #db.drop_all()
-
     return None
-
-######## TESTING STUFF
-def create_users():
-    from .models import User
-
-    users = [User(username='bob', email='bob@gmail.com', password='123')]
-
-    for user in users:
-        user.save()        
-
-
-
-def recreate_db(db, app):
-    with app.app_context():
-        db.drop_all()
-        from .models import User
-        db.create_all()
-        create_users()

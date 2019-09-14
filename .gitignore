@@ -8,3 +8,6 @@ venv/
 
 #vim files
 *.swp
+
+#migrations
+migrations/

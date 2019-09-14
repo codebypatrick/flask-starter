@@ -24,3 +24,30 @@
 </table>
 
 {% endmacro %}
+
+{% macro render_post(post) %}
+<div class="card article">
+	<div class="card-content">
+		<div class="media">
+			<div class="media-center">
+				user image here
+			</div>
+			<div class="media-content has-text-centered">
+				<p class="title article-title">{{post.title}}</p>
+				<p class="subtitle is-6 article-subtitle">
+				<a href="">{{post.author.username}}</a> on
+				<span class="long-date has-text-grey" title="{{post.created}}"></span>
+				</p>
+			</div>
+		</div>
+	</div>
+
+	<div class="content article-body">
+		{% if post.body_html %}
+			{{ post.body_html | safe }}
+		{% else %}
+			{{ post.body}}
+		{% endif %}
+	</div>
+</div>
+{% endmacro %}
