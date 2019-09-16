@@ -15,11 +15,13 @@ def create_app(config_name='development'):
     from .blueprints.home import home
     from .blueprints.account import account
     from .blueprints.post import post
+    from .blueprints.error import error
 
     # Register blueprints
     app.register_blueprint(home)
     app.register_blueprint(account)
     app.register_blueprint(post)
+    app.register_blueprint(error)
 
 
     return app
