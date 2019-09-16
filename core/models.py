@@ -4,14 +4,19 @@ from werkzeug.security import generate_password_hash, check_password_hash
 from datetime import datetime
 from markdown import markdown
 import bleach
+from slugify import slugify
 
 # Define base model for other tables to inherit
 class Base(db.Model):
     __abstract__ = True
 
+    # number of items per page in pagination
+    PER_PAGE = 10
+
     id = db.Column(db.Integer, primary_key=True)
     created = db.Column(db.DateTime(), default= datetime.now)
     modified = db.Column(db.DateTime(), default=datetime.now)
+
 
     # Save given instance of model
     def save(self):
@@ -23,7 +28,6 @@ class Base(db.Model):
         db.session.delete(self)
         db.session.commit()
 
-
 class User(UserMixin, Base):
 
     __tablename__ = 'users'
@@ -34,6 +38,10 @@ class User(UserMixin, Base):
     about_me = db.Column(db.Text())
     member_since = db.Column(db.DateTime(), default=datetime.now)
     last_seen = db.Column(db.DateTime(), default=datetime.now)
+    last_login_at = db.Column(db.DateTime)
+    last_login_ip = db.Column(db.String(25))
+    current_login_at = db.Column(db.DateTime)
+    current_login_ip = db.Column(db.String(25))
     posts = db.relationship('Post', backref='author', lazy='dynamic')
 
     def __init__(self, username, email, password):
@@ -71,6 +79,7 @@ class Post(Base):
 
     title = db.Column(db.String(255))
     body = db.Column(db.Text())
+    slug = db.Column(db.String(255))
     body_html = db.Column(db.Text())
     author_id = db.Column(db.Integer, db.ForeignKey('users.id'))
     comments = db.relationship('Comment', backref='post', lazy='dynamic')
@@ -85,6 +94,11 @@ class Post(Base):
         #self.body = bod
 
     @staticmethod
+    def generate_slug(target, value, oldvalue, initiator):
+        if value and (not target.slug or value != oldvalue):
+            target.slug = slugify(value)
+
+    @staticmethod
     def on_changed_body(target, value, oldvalue, initiator):
         allowed_tags = ['a', 'abbr', 'p', 'h1', 'h2', 'h3', 'code', 'em',
                 'strong', 'pre', 'ul']
@@ -95,8 +109,9 @@ class Post(Base):
                 )
 
 
-#Event listener on post body
+#Event listeners on post model
 db.event.listen(Post.body, 'set', Post.on_changed_body)
+db.event.listen(Post.title, 'set', Post.generate_slug, retval=False)
 
 
 class Comment(Base):

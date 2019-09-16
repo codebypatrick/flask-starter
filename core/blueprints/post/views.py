@@ -8,12 +8,13 @@ from ...models import Post
 @post.route('/')
 @login_required
 def list():
-    #posts = Post.query.order_by(Post.created.desc()).paginate(page, 20, False)
+    # get the page from url eg. ?page=2
     page = request.args.get('page', type=int)
-    pagination = Post.query.order_by(Post.created.desc()).paginate(page, 10, error_out=False)
+    pagination = Post.query.order_by(Post.created.desc()).paginate(page, Post.PER_PAGE, error_out=False)
+    
     return render_template('list.html', posts=pagination)
 
-@post.route('/create', methods=['GET', 'POST'])
+@post.route('/new', methods=['GET', 'POST'])
 @login_required
 def create():
     form = PostForm()
@@ -24,7 +25,7 @@ def create():
                 author_id= current_user.id
                 )
         post.save()
-        flash('Post Created', 'is-success')
+        flash('Post {} Created!'.format(post.title), 'is-success')
         return redirect(url_for('post.show', post_id=post.id))
     return render_template('create.html', form=form)
 
@@ -44,7 +45,7 @@ def update(post_id):
         post.body = form.body.data
         post.modified = datetime.now()
         post.save()
-        flash('Post updated', 'is-success')
+        flash('Post {} updated'.format(post.title), 'is-success')
         return redirect(url_for('post.show', post_id=post_id))
     
     form.title.data = post.title
@@ -57,6 +58,6 @@ def update(post_id):
 def delete():
     post = Post.query.get(request.form['post_id'])
     post.delete()
-    flash('Post deleted', 'is-success')
+    flash('Post {} Deleted!'.format(post.title), 'is-success')
 
     return redirect(url_for('post.list'))

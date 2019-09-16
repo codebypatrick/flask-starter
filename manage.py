@@ -71,7 +71,7 @@ def create_posts(count=100):
                 )
         db.session.add(p)
         db.session.commit()
-        return '{} Posts created'.format(count)
+        return '{} Posts created'.format(Post.query.count())
 
 
 @manager.command

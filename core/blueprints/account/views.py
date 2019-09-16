@@ -4,6 +4,7 @@ from sqlalchemy import or_
 from . import account
 from .forms import RegisterForm, LoginForm, ProfileForm 
 from ...models import User
+from datetime import datetime
 
 @account.before_app_request
 def before_request():
@@ -23,6 +24,16 @@ def login():
             )).first()
         if user is not None and user.check_password(form.password.data):
             login_user(user, form.remember_me.data)
+            at = datetime.now()
+            ip = request.remote_addr or 'unknown'
+            current_user.last_login_at = current_user.last_login_at or  at
+            current_user.last_login_ip = current_user.last_login_ip or  ip
+
+            current_user.current_login_at = at
+            current_user.current_login_ip = ip
+
+            current_user.save()
+
             return redirect(request.args.get('next') or url_for('home.index'))
         flash('Invalid username or email', 'is-danger')
 
