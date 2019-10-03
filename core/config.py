@@ -21,6 +21,15 @@ class DevelopmentConfig(Config):
     SQLALCHEMY_DATABASE_URI = 'sqlite:///' + os.path.join(BASE_DIR, 'dev.db')
     DEBUG = True
     SECRET_KEY = 's3cr3t'
+    SECURITY_SALT = 's3cr3t-salt'
+    TOKEN_VALIDITY = 3600
+    MAIL_SERVER = 'smtp.gmail.com'
+    MAIL_PORT = 465
+    MAIL_USE_TLS = False
+    MAIL_USE_SSL = True
+    MAIL_USERNAME = 'codebypatrick@gmail.com'
+    MAIL_DEFAULT_SENDER = 'codebypatrick@gmail.com'
+    MAIL_PASSWORD = '@$$patrick2019'
 
 
 class TestingConfig(Config):
@@ -30,5 +39,7 @@ class TestingConfig(Config):
 config = {
         'development': DevelopmentConfig,
         'production': ProductionConfig,
-        'testing': TestingConfig
+        'testing': TestingConfig,
+
+        'default': DevelopmentConfig
         }

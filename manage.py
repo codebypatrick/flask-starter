@@ -1,9 +1,10 @@
+import os
 from core import create_app, db
-from core.models import User, Post
+from core.models import User
 from flask_script import Manager, Shell
 from flask_migrate import Migrate, MigrateCommand
 
-app = create_app()
+app = create_app(os.getenv('APP_SETTINGS') or 'default')
 manager = Manager(app)
 migrate = Migrate(app, db)
 
@@ -23,12 +24,22 @@ def setup():
     d = User(
             username='developer',
             email='developer@site.com',
-            password='devpass'
+            password='devpass',
+            confirmed=True
             )
+
+    a = User(
+            username='ad@min',
+            email='admin@site.com',
+            password='adminpass'
+            )
+    a.confirmed = True
+
+    db.session.add(a)
     db.session.add(d)
     db.session.commit()
     
-    return 'Default user created'
+    return 'Default users created'
 
 @manager.command
 def create_users(count=100):

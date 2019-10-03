@@ -1,39 +1,34 @@
 from flask import Flask
 
+from flask_sqlalchemy import SQLAlchemy
+from flask_login import LoginManager
+from flask_mail import Mail
+
 from .config import config
-from .extentions import db, login_manager
 
-def create_app(config_name='development'):
+db = SQLAlchemy()
+login_manager = LoginManager()
+mail = Mail()
+
+def create_app(config_name=None):
     app = Flask(__name__)
-
     app.config.from_object(config[config_name])
-
-    extentions(app)
-
-
-    # Import blueprints
-    from .blueprints.home import home
-    from .blueprints.account import account
-    from .blueprints.post import post
-    from .blueprints.error import error
-
-    # Register blueprints
-    app.register_blueprint(home)
-    app.register_blueprint(account)
-    app.register_blueprint(post)
-    app.register_blueprint(error)
-
+    
+    initialize_extensions(app)
+    register_blueprints(app)
 
     return app
 
-
-def extentions(app):
-    #loads the extentions
+def initialize_extensions(app):
     db.init_app(app)
     login_manager.session_protection = 'strong'
-    login_manager.login_view = 'account.login'
+    login_manager.login_view = 'auth.login'
     login_manager.init_app(app)
+    mail.init_app(app)
 
-    #recreate_db(app)
+def register_blueprints(app):
+    from .main import main
+    from .auth import auth
 
-    return None
+    app.register_blueprint(main)
+    app.register_blueprint(auth)
