@@ -118,7 +118,7 @@ def login():
         if user is not None and user.check_password(form.password.data):
             login_user(user, form.remember_me.data)
             return redirect(request.args.get('next') or url_for('main.index'))
-        flash('Invaild Credienials or Password', 'is-danger')
+        flash('Invaild Credienials or Password', 'danger')
 
     return render_template('auth/login.html', form=form, title='Login')
 

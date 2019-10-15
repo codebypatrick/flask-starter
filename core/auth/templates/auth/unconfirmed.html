@@ -1,12 +1,19 @@
-{% extends 'layout.html' %}
+{% extends '_layouts/1_col.html' %}
 
-{% block content %}
-<h3>Hello {{ current_user.username }}</h3>
-<p>You have not yet confirmed your account yet.</p>
-<p>Before you can access the site you need to confirm your account<br>
+{% block title %} Please confirm your account {% endblock %}
+
+{% block page_content %}
+<div class="bg-white card-md">
+	<h3>Hello {{ current_user.username }}</h3>
+
+	<p>You have not yet confirmed your account yet.</p>
+
+	<p>Before you can access the site you need to confirm your account<br>
 Check your inbox, you should have recieved an email with a confirmation link</p>
 
-<p>
+
+	<p>
 Need another confirmation email? <a href="{{url_for('.resend_confirmation')}}">Click Here</a>
 </p>
+</div>
 {% endblock %}

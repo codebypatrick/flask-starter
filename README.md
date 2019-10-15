@@ -2,6 +2,19 @@
 This is a starter for flask web projects
 
 ## Setup
+Clone repo
+```bash
+$ git clone https://github.com/codebypatrick/flask-starter.git
+```
+
+Setup python
+```bash
+$ pip install virtualenv
+$ virtualenv venv
+$ source venv/bin/activate
+$ pip install -r requirements.txt
+```
+
 ### Database and migrations
 Run the initialization script
 
@@ -22,6 +35,10 @@ $ python manage.py db upgrade
 ```
 
 ### Seed data
+Setup default data
+```bash
+$ python manage.py setup
+```
 
 create users
 ```bash
