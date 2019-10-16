@@ -12,6 +12,7 @@ class User(db.Model, UserMixin):
     email = db.Column(db.String(64), unique=True)
     password = db.Column(db.String())
     confirmed = db.Column(db.Boolean, default=False) 
+    roles = db.relationship('Role', secondary='user_roles')
 
     def __init__(self, **kwargs):
         super(User, self).__init__(**kwargs)
@@ -62,8 +63,50 @@ class User(db.Model, UserMixin):
         db.session.commit()
         return True
 
+    def has_role(self, *requirements):
+        """
+        Return True if user has role in list
+        eg. has_role(['admin', 'cleaner'])
+        """
+        
+        for requirement in requirements:
+            if isinstance(requirement, (list)):
+                for role in requirement:
+                    for r in self.roles:
+                        if r.name == role:
+                            return True
+            else:
+                role = requirement
+                for r in self.roles:
+                    if r.name == role:
+                        return True
+        return False
+
 
 @login_manager.user_loader
 def load_user(user_id):
     return User.query.get(int(user_id))
 
+class Role(db.Model):
+    __tablename__ = 'roles'
+
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(64), unique=True)
+
+    @staticmethod
+    def insert_roles():
+        roles = ['Admin', 'Poster']
+        for r in roles:
+            role = Role.query.filter_by(name=r).first()
+            if role is None:
+                role = Role(name=r)
+            db.session.add(role)
+            
+        db.session.commit()
+
+class UserRoles(db.Model):
+    __tablename__ = 'user_roles'
+
+    id = db.Column(db.Integer, primary_key=True)
+    user_id = db.Column(db.Integer, db.ForeignKey('users.id', ondelete='CASCADE'))
+    role_id = db.Column(db.Integer, db.ForeignKey('roles.id', ondelete='CASCADE'))

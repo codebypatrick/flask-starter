@@ -27,8 +27,10 @@ def initialize_extensions(app):
     mail.init_app(app)
 
 def register_blueprints(app):
+    from .errors import errors
     from .main import main
     from .auth import auth
 
+    app.register_blueprint(errors)
     app.register_blueprint(main)
     app.register_blueprint(auth)
