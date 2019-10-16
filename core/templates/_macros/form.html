@@ -78,3 +78,56 @@
 		{% endif %}
 	</form>
 {% endmacro %}
+
+{# NEW FORM #}
+
+{% macro field_description_errors(f) %}
+	{% if f.errors %}
+		{% for e in f.errors %}
+			<p class="text-red-500 text-sm italic">{{ e }}</p>
+		{% endfor %}
+	{% endif %}
+
+	{% if f.description %}
+		<p class="text-sm text-gray-500">{{ f.description }}</p>
+	{% endif %}
+{% endmacro %}
+
+{% macro render_input_field(f) %}
+<div class="mb-4">
+	{% if f.type != 'HiddenField' or f.type != 'CSRFTokenField' %}
+		<label class="field-label" for="{{ f.id}}">{{ f.label.text }}</label>
+	{% endif %}
+	{{ f(class_='field', **kwargs) }}
+	{{ field_description_errors(f) }}
+</div>
+{% endmacro %}
+
+{% macro render_checkbox_field(f) %}
+<div class="mb-4">
+	<label class="field-label" for="{{ f.id }}">
+		{{ f() }} {{ f.label.text }}
+	</label>
+</div>
+{% endmacro %}
+
+{% macro quick_form(form, action="", method="post", enctype=None, button_text="Save") %}
+	<form 
+	     {% if action %} action="{{ action }}" {% endif %}
+	     {% if method %} method="{{ method }}" {% endif %}
+	     {% if enctype %} enctype="{{ enctype }}" {% endif %}
+	     novalidate
+	     role="form"
+	     class="mb-4">
+		{{ form.hidden_tag()}}
+		{% for f in form %}
+			{% if f.type in ('StringField', 'PasswordField', 'TextField') %}
+				{{ render_input_field(f) }}
+			{% elif f.type == 'BooleanField' %}
+				{{ render_checkbox_field(f) }}
+			{% endif %}
+		{% endfor %}
+
+		<button class="btn-primary">{{ button_text }}</button>
+	</form>
+{% endmacro %}

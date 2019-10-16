@@ -1,0 +1,69 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* LINKS */
+a {
+	@apply .text-gray-500
+}
+
+a:hover {
+	@apply .text-teal-700
+}
+
+/* ALERT */
+.alert {
+	@apply .border .mt-2 .py-2 .px-3 .rounded 
+}
+
+.alert-danger {
+	@apply .bg-red-100 .border-red-400 .text-red-700
+}
+
+.alert-info {
+	@apply .bg-blue-100 .border-blue-400 .text-blue-700
+}
+
+.alert-success {
+	@apply .bg-green-100 .border-green-400 .text-green-700
+}
+
+.alert-warning {
+	@apply .bg-orange-100 .border-orange-400 .text-orange-700 
+}
+
+/* FORM */
+.field {
+	@apply .border .rounded .py-2 .px-3 .shadow .text-gray-700 .leading-tight
+}
+
+.field-label {
+	@apply .block .text-gray-500 .mb-2 .text-sm .font-bold 
+}
+
+/* buttons */
+.btn {
+	@apply .font-bold .rounded .py-2 .px-4 .text-sm 
+}
+
+.btn-primary {
+	@apply .btn .bg-blue-500 .text-white
+}
+
+.btn-primary:hover {
+	@apply .bg-blue-700
+}
+
+/* CARDS */
+.card {
+	@apply .rounded .border .shadow 
+}
+
+.card-md {
+	@apply .card .px-8 .pt-6 .pb-8 .mb-6
+}
+
+/* HEADINGS */
+.heading {
+	@apply .text-blue-700 .font-bold .mb-4
+}

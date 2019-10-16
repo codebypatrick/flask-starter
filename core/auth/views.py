@@ -6,6 +6,7 @@ from .forms import LoginForm,  RegisterForm, ChangePasswordForm, ForgotPasswordF
 from .. import db
 from ..models import User
 from ..util import send_mail
+from ..decorators import role_required, confirmed_required
 
 @auth.route('/join', methods=['GET', 'POST'])
 def register():
@@ -25,7 +26,7 @@ def register():
 
         html = render_template('auth/activate.html', confirm_url=confirm_url)
         send_mail(user.email, subject, html)
-        flash('A confiration link has been sent to your email address.', 'is-info')
+        flash('A confiration link has been sent to your email address.', 'info')
         return redirect(url_for('main.index'))
     return render_template('auth/join.html', form=form, title='Register')
 
@@ -36,7 +37,7 @@ def confirm_email(token):
         flash('Your account is already confirmed', 'is-warning')
         return redirect(url_for('main.index'))
     if current_user.verify_confirm_token(token):
-        flash('Your account is confirmed!', 'is-info')
+        flash('Your account is confirmed!', 'info')
     else:
         flash('The confirmation link is invalid or expired')
     return redirect(url_for('main.index'))
@@ -48,7 +49,7 @@ def resend_confirmation():
     token = current_user.generate_confirm_token()
     confirm_url = url_for('.confirm_email', token=token, _external=True)
     send_mail(user.email, subject, html)
-    flash('A new confirmation link has been sent to your email', 'is-info')
+    flash('A new confirmation link has been sent to your email', 'info')
     return redirect(url_for('main.index'))
 
 @auth.route('/unconfirmed')
@@ -68,7 +69,7 @@ def change_password():
             current_user.password = form.password.data
             db.session.add(current_user)
             db.session.commit()
-            flash('Your password has been updated!', 'is-info')
+            flash('Your password has been updated!', 'info')
             return redirect(url_for('main.index'))
         else:
             flash('Invalid password')
@@ -88,7 +89,7 @@ def forgot_password():
                 'auth/password_reset.html',
                 reset_url=reset_url)
         send_mail(form.email.data, subject, html)
-        flash('An email with instructions to reset your password has been sent to you.', 'is-info')
+        flash('An email with instructions to reset your password has been sent to you.', 'info')
 
     return render_template('auth/forgot_password.html', form=form, title='Forgot Password')
 
@@ -100,7 +101,7 @@ def password_reset(token):
         if user is None:
             return redirect(url_for('main.index'))
         if user.verify_reset_token(form.password.data):
-            flash('Your password was updated', 'is-info')
+            flash('Your password was updated', 'info')
             return redirect(url_for('auth.login'))
         else:
             return redirect(url_for('main.index'))
@@ -118,13 +119,23 @@ def login():
         if user is not None and user.check_password(form.password.data):
             login_user(user, form.remember_me.data)
             return redirect(request.args.get('next') or url_for('main.index'))
-        flash('Invaild Credienials or Password', 'is-danger')
+        flash('Invaild Credienials or Password', 'danger')
 
     return render_template('auth/login.html', form=form, title='Login')
 
 @auth.route('/logout')
 def logout():
     logout_user()
-    flash('You are logged out')
+    flash('You are logged out', 'warning')
     return redirect(url_for('main.index'))
 
+
+@auth.route('/admin')
+@role_required(['Admin', 'poster'])
+def admin():
+    return 'Admin only'
+
+@auth.route('/me')
+@confirmed_required
+def me():
+    return 'My profile'

@@ -1,6 +1,6 @@
 import os
 from core import create_app, db
-from core.models import User
+from core.models import User, Role
 from flask_script import Manager, Shell
 from flask_migrate import Migrate, MigrateCommand
 
@@ -20,6 +20,10 @@ def hello():
 
 @manager.command
 def setup():
+    recreate_db()
+    Role.insert_roles()
+    admin = Role.query.filter_by(name='Admin').first()
+
     """ Create default users account change these details in production """
     d = User(
             username='developer',
@@ -27,14 +31,23 @@ def setup():
             password='devpass',
             confirmed=True
             )
+    
+    d.roles.append(admin)
 
     a = User(
             username='ad@min',
             email='admin@site.com',
-            password='adminpass'
+            password='adminpass',
+            confirmed=True
             )
-    a.confirmed = True
+    
+    #a.roles.append(admin)
+    u = User(
+            username='unc',
+            email='unc@gmail.com',
+            password='123')
 
+    db.session.add(u)
     db.session.add(a)
     db.session.add(d)
     db.session.commit()

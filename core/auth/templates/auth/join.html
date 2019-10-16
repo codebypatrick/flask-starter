@@ -1,12 +1,13 @@
-{% extends 'layout.html' %}
-{% import '_macros/form.html' as _f %}
+{% extends '_layouts/1_col.html' %}
+{% import '_macros/form.html' as f %}
 
-{% block content %}	
-	<h1>Create Account</h1>
-	{{ _f.render_form(form, 
-			action_url=url_for('.register'),
-			action_text='Create Account',
-			button_class='is-info') }}
+{% block title %} Create Account {% endblock %} 
+
+{% block page_content %}	
+<div class="bg-white card-md">
+	<h1 class="heading">Create Account</h1>
+	{{ f.quick_form(form, button_text='Create Account') }}
 
 	<a href="{{url_for('.login')}}">Login</a>
+</div>
 {% endblock %}

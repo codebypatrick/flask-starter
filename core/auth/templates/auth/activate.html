@@ -1,4 +1,12 @@
-<p>Welcome! thanks for signing up. Please click on the link to activate your account</p>
-<p><a href="{{confirm_url}}">{{confirm_url}}</a></p>
-<br>
-<p>Cheers!</p>
+{% extends '_layouts/1_col.html' %}
+
+{% block title %} Activate your account {% endblock %}
+
+{% block page_content %}
+<div class="bg-white card-md">
+	<p>Welcome! thanks for signing up. Please click on the link to activate your account</p>
+	<p><a href="{{confirm_url}}">{{confirm_url}}</a></p>
+	<br>
+	<p>Cheers!</p>
+</div>
+{% endblock %}
