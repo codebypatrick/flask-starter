@@ -1,8 +1,8 @@
 from flask_wtf import FlaskForm as Form
-from wtforms import StringField, PasswordField, BooleanField,TextAreaField
+from wtforms import StringField, PasswordField, BooleanField,TextAreaField, SelectField
 from wtforms.validators import DataRequired, Email, EqualTo
 from wtforms import ValidationError
-from ..models import User
+from ..models import User, Role
 
 class RegisterForm(Form):
     email = StringField('Email Address', validators=[DataRequired(), Email()])
@@ -35,6 +35,31 @@ class LoginForm(Form):
     password = PasswordField('Password', validators=[DataRequired()])
     remember_me = BooleanField('Keep me logged in')
 
-class ProfileForm(Form):
+class EditProfileForm(Form):
     about_me = TextAreaField('About Me')
+
+class EditProfileAdminForm(Form):
+    email = StringField('Email Address', validators=[Email()])
+    username = StringField('Username')
+    roles = SelectField('Roles', coerce=int)
+    about_me = TextAreaField('About Me')
+
+    def __init__(self, user, *args, **kwargs):
+        super(EditProfileAdminForm, self).__init__(*args, **kwargs)
+        self.roles.choices = [(role.id, role.name) for role in Role.query.order_by(Role.name).all()]
+
+        self.user = user
+
+    def validate_email(self, field):
+        if field.data != self.user.email and \
+                User.query.filter_by(email=field.data).first():
+                    raise ValidationError('Email already taken!')
+    
+
+    def validate_username(self, field):
+        if field.data != self.user.username and \
+                User.query.filter_by(username=field.data).first():
+                    raise ValidationError('Username already taken!')
+
+
 

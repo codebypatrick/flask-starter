@@ -11,6 +11,7 @@ class User(db.Model, UserMixin):
     username = db.Column(db.String(64), unique=True, index=True)
     email = db.Column(db.String(64), unique=True)
     password = db.Column(db.String())
+    about_me = db.Column(db.Text)
     confirmed = db.Column(db.Boolean, default=False) 
     roles = db.relationship('Role', secondary='user_roles')
 

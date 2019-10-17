@@ -2,7 +2,13 @@ from flask import render_template, redirect, url_for, flash, abort, request
 from flask_login import login_required, login_user, logout_user, current_user
 from sqlalchemy import or_
 from . import auth
-from .forms import LoginForm,  RegisterForm, ChangePasswordForm, ForgotPasswordForm, PasswordResetRequestForm
+from .forms import LoginForm, \
+                    RegisterForm, \
+                    ChangePasswordForm, \
+                    ForgotPasswordForm, \
+                    PasswordResetRequestForm, \
+                    EditProfileForm, \
+                    EditProfileAdminForm
 from .. import db
 from ..models import User
 from ..util import send_mail
@@ -124,12 +130,44 @@ def login():
     return render_template('auth/login.html', form=form, title='Login')
 
 @auth.route('/logout')
+@login_required
 def logout():
     logout_user()
     flash('You are logged out', 'warning')
     return redirect(url_for('main.index'))
 
+@auth.route('/edit-profile', methods=['GET', 'POST'])
+@login_required
+def edit_profile():
+    form = EditProfileForm()
+    if form.validate_on_submit():
+        current_user.about_me = form.about_me.data
+        db.session.add(current_user)
+        db.session.commit()
+        flash('Profile updated', 'success')
+        #return 
+    form.about_me.data = current_user.about_me
+    return render_template('auth/edit_profile.html', form=form)
 
+@auth.route('/edit-profile/<id>', methods=['GET', 'POST'])
+@login_required
+@role_required('Admin')
+def edit_profile_admin(id):
+    user = User.query.get_or_404(id)
+    form = EditProfileAdminForm(user=user)
+    if form.validate_on_submit():
+        user.email = form.email.data
+        user.username = form.username.data
+        user.about_me = form.about_me.data
+        db.session.add(user)
+        db.session.commit()
+    form.email.data = user.email
+    form.username.data = user.username
+    form.about_me.data = user.about_me
+
+    return render_template('auth/edit_profile.html', form=form)
+
+### Remove me later TESTING ####
 @auth.route('/admin')
 @role_required(['Admin', 'poster'])
 def admin():

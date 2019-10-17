@@ -1,0 +1,11 @@
+{% extends '_layouts/1_col.html' %}
+{% import '_macros/form.html' as f %}
+
+{% block title %} {{ current_user.username }} {% endblock %}
+
+{% block page_content %}
+<div class="bg-white card-md">
+	<h1 class="heading">Edit Profile</h1>
+	{{ f.quick_form(form) }}
+</div>
+{% endblock %}
