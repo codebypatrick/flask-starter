@@ -2,10 +2,15 @@ from functools import wraps
 from flask_login import current_user
 from flask import abort, url_for, redirect, flash
 
-def role_required(role):
+
+def role_required(*role):
     def decorator(f):
         @wraps(f)
         def decorated_function(*args, **kwargs):
+            # allow admins
+            if current_user.is_administrator():
+                return f(*args, **kwargs)
+
             if not current_user.has_role(role):
                 abort(403)
             return f(*args, **kwargs)

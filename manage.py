@@ -23,6 +23,8 @@ def setup():
     recreate_db()
     Role.insert_roles()
     admin = Role.query.filter_by(name='Admin').first()
+    poster = Role.query.filter_by(name='Poster').first()
+    mod = Role.query.filter_by(name='Moderator').first() 
 
     """ Create default users account change these details in production """
     d = User(
@@ -41,7 +43,9 @@ def setup():
             confirmed=True
             )
     
-    #a.roles.append(admin)
+    a.roles.append(poster)
+    a.roles.append(mod)
+
     u = User(
             username='unc',
             email='unc@gmail.com',

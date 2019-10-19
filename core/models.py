@@ -1,5 +1,5 @@
 from . import db, login_manager
-from flask_login import UserMixin
+from flask_login import UserMixin, AnonymousUserMixin
 from werkzeug.security import generate_password_hash, check_password_hash
 from itsdangerous import TimedJSONWebSignatureSerializer as Serializer
 from flask import current_app
@@ -64,25 +64,37 @@ class User(db.Model, UserMixin):
         db.session.commit()
         return True
 
+    def add_role(self, role_id):
+        role = Role.query.get(role_id)
+        self.roles.append(role)
+
+    def remove_role(self, role_id):
+        role = Role.query.get(role_id)
+        self.roles.remove(role)
+
     def has_role(self, *requirements):
-        """
-        Return True if user has role in list
-        eg. has_role(['admin', 'cleaner'])
-        """
-        
         for requirement in requirements:
-            if isinstance(requirement, (list)):
-                for role in requirement:
-                    for r in self.roles:
-                        if r.name == role:
-                            return True
-            else:
-                role = requirement
+            for role in requirement:
                 for r in self.roles:
                     if r.name == role:
-                        return True
+                        return True 
         return False
 
+    def is_administrator(self):
+        for role in self.roles:
+            if role.name == 'Admin':
+                return True
+        return False
+
+class AnonymousUser(AnonymousUserMixin):
+    def has_role(self, requirements):
+        return False
+
+    def is_administrator(self):
+        return False
+    
+
+login_manager.anonymous_user = AnonymousUser
 
 @login_manager.user_loader
 def load_user(user_id):
@@ -96,7 +108,7 @@ class Role(db.Model):
 
     @staticmethod
     def insert_roles():
-        roles = ['Admin', 'Poster']
+        roles = ['Admin', 'Poster', 'Moderator']
         for r in roles:
             role = Role.query.filter_by(name=r).first()
             if role is None:

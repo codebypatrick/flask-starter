@@ -10,7 +10,7 @@ from .forms import LoginForm, \
                     EditProfileForm, \
                     EditProfileAdminForm
 from .. import db
-from ..models import User
+from ..models import User, Role
 from ..util import send_mail
 from ..decorators import role_required, confirmed_required
 
@@ -145,7 +145,7 @@ def edit_profile():
         db.session.add(current_user)
         db.session.commit()
         flash('Profile updated', 'success')
-        #return 
+        return redirect(url_for('.profile', username=current_user.username)) 
     form.about_me.data = current_user.about_me
     return render_template('auth/edit_profile.html', form=form)
 
@@ -159,19 +159,41 @@ def edit_profile_admin(id):
         user.email = form.email.data
         user.username = form.username.data
         user.about_me = form.about_me.data
+        #make copy of user roles and remove any not in form.roles.data
+        old_roles = user.roles
+        for old_role in old_roles:
+            if old_role.id not in form.roles.data:
+                user.remove_role(old_role.id)
+        
+        for role in form.roles.data:
+            user.add_role(role)
+
         db.session.add(user)
         db.session.commit()
+        flash('Account {} updated', 'success')
+        return redirect(url_for('.profile', username=user.username))
     form.email.data = user.email
     form.username.data = user.username
     form.about_me.data = user.about_me
+    form.roles.data = [r.id for r in user.roles]
 
     return render_template('auth/edit_profile.html', form=form)
 
+@auth.route('/user/<username>')
+@login_required
+def profile(username):
+    return username
+
 ### Remove me later TESTING ####
 @auth.route('/admin')
-@role_required(['Admin', 'poster'])
+@role_required('Adminy')
 def admin():
     return 'Admin only'
+
+@auth.route('/poster')
+@role_required('Poster')
+def poster():
+    return 'Poster only'
 
 @auth.route('/me')
 @confirmed_required

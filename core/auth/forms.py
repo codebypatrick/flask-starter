@@ -1,8 +1,18 @@
 from flask_wtf import FlaskForm as Form
-from wtforms import StringField, PasswordField, BooleanField,TextAreaField, SelectField
+from wtforms import StringField, \
+                    PasswordField, \
+                    BooleanField, \
+                    TextAreaField, \
+                    SelectField, \
+                    SelectMultipleField
+from wtforms.widgets import ListWidget, CheckboxInput
 from wtforms.validators import DataRequired, Email, EqualTo
 from wtforms import ValidationError
 from ..models import User, Role
+
+class MultiCheckboxField(SelectMultipleField):
+    widget = ListWidget(prefix_label=False)
+    option_widget = CheckboxInput()
 
 class RegisterForm(Form):
     email = StringField('Email Address', validators=[DataRequired(), Email()])
@@ -41,8 +51,9 @@ class EditProfileForm(Form):
 class EditProfileAdminForm(Form):
     email = StringField('Email Address', validators=[Email()])
     username = StringField('Username')
-    roles = SelectField('Roles', coerce=int)
+    #roles = SelectField('Roles', coerce=int)
     about_me = TextAreaField('About Me')
+    roles = MultiCheckboxField('Roles', coerce=int)
 
     def __init__(self, user, *args, **kwargs):
         super(EditProfileAdminForm, self).__init__(*args, **kwargs)

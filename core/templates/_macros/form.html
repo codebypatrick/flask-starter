@@ -44,6 +44,13 @@
 </div>
 {% endmacro %}
 
+{% macro render_multicheckbox_field(f) %}
+<div class="mb-4">
+	<label class="field-label" for="{{f.id }}">{{ f.label.text }}</label>
+	{{ f() }}
+</div>
+{% endmacro %}
+
 {% macro quick_form(form, action="", method="post", enctype=None, button_text="Save") %}
 	<form 
 	     {% if action %} action="{{ action }}" {% endif %}
@@ -62,6 +69,10 @@
 				{{ render_textarea_field(f) }}
 			{% elif f.type == 'SelectField' %}
 				{{ render_select_field(f) }}
+			{% elif f.type == 'MultiCheckboxField' %}
+				{{ render_multicheckbox_field(f) }}
+			{% else %}
+				{{ f() }}
 			{% endif %}
 		{% endfor %}
 
