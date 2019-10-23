@@ -1,0 +1,9 @@
+{% extends '_layouts/1_col.html' %}
+{% import '_macros/form.html' as f %} 
+
+{% block title %} New Post {% endblock %}
+
+{% block page_content %}
+	<h1>New Post</h1>
+	{{ f.quick_form(form) }}
+{% endblock %}

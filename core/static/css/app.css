@@ -11368,11 +11368,14 @@ video {
 /* LINKS */
 
 a {
-  color: #a0aec0
+  color: #38b2ac
 }
 
 a:hover {
   color: #2c7a7b
+}
+
+svg { fill: currentColor
 }
 
 /* ALERT */
@@ -11433,6 +11436,9 @@ a:hover {
   font-weight: 700
 }
 
+textarea { resize: vertical
+}
+
 /* buttons */
 
 .btn {
@@ -11441,24 +11447,69 @@ a:hover {
   padding-top: 0.5rem;
   padding-bottom: 0.5rem;
   padding-left: 1rem;
-  padding-right: 1rem;
-  font-size: 0.875rem
+  padding-right: 1rem
+}
+
+.btn-sm {
+  border-radius: 0.25rem;
+  font-size: 0.875rem;
+  padding-top: 0.25rem;
+  padding-bottom: 0.25rem;
+  padding-left: 0.5rem;
+  padding-right: 0.5rem
+}
+
+.btn-xs {
+  border-radius: 0.25rem;
+  font-size: 0.75rem;
+  padding-top: 0.25rem;
+  padding-bottom: 0.25rem;
+  padding-left: 0.5rem;
+  padding-right: 0.5rem
 }
 
 .btn-primary {
-  font-weight: 700;
-  border-radius: 0.25rem;
-  padding-top: 0.5rem;
-  padding-bottom: 0.5rem;
-  padding-left: 1rem;
-  padding-right: 1rem;
-  font-size: 0.875rem;
   background-color: #4299e1;
   color: #fff
 }
 
 .btn-primary:hover {
   background-color: #2b6cb0
+}
+
+.btn-danger {
+  background-color: #f56565;
+  color: #fff
+}
+
+.btn-danger:hover {
+  background-color: #c53030
+}
+
+.btn-success {
+  background-color: #68d391;
+  color: #fff
+}
+
+.btn-success:hover {
+  background-color: #48bb78;
+  color: #fff
+}
+
+.btn-default {
+  background-color: #e2e8f0;
+  color: #4a5568
+}
+
+.btn-default:hover {
+  background-color: #cbd5e0
+}
+
+/* icon */
+
+.icon {
+  display: inline-flex;
+  align-items: center
 }
 
 /* CARDS */

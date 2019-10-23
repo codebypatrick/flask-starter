@@ -1,0 +1,27 @@
+{% extends '_layouts/1_col.html' %}
+{% import '_macros/form.html' as f with context %}
+{% block title %} Home {% endblock %}
+{% block page_content %}
+	<div class="bg-white p-4 rounded">
+		<h2>{{post.title }}</h2>
+		{% if post.body_html %}
+			{{ post.body_html | safe }}
+		{% else %}
+			{{ post.body }}
+		{% endif %}
+		<div>
+			{{f.quick_form(form) }} 
+		</div>
+		<div class="bg-gray-200 text-sm text-gray-700">
+		{% for c in post.comments %}
+		<div>{% if c.body_html %}
+				{{ c.body_html | safe }}
+			{% else %}
+				{{ c.body }}
+			{% endif %}
+			<p>{{ c.author.username }}</p>
+		</div>
+		{% endfor %}
+		</div>
+	</div>
+{% endblock %}

@@ -4,12 +4,14 @@
 
 /* LINKS */
 a {
-	@apply .text-gray-500
+	@apply .text-teal-500
 }
 
 a:hover {
 	@apply .text-teal-700
 }
+ 
+svg { fill: currentColor }
 
 /* ALERT */
 .alert {
@@ -41,19 +43,57 @@ a:hover {
 	@apply .block .text-gray-500 .mb-2 .text-sm .font-bold 
 }
 
+textarea { resize: vertical }
+
 /* buttons */
 .btn {
-	@apply .font-bold .rounded .py-2 .px-4 .text-sm 
+	@apply .font-bold .rounded .py-2 .px-4 
+}
+
+.btn-sm {
+	@apply .rounded .text-sm .py-1 .px-2
+}
+
+.btn-xs {
+	@apply .rounded .text-xs .py-1 .px-2
 }
 
 .btn-primary {
-	@apply .btn .bg-blue-500 .text-white
+	@apply .bg-blue-500 .text-white
 }
 
 .btn-primary:hover {
-	@apply .bg-blue-700
+	@apply .bg-blue-700 .text-white
 }
 
+.btn-danger {
+	@apply .bg-red-500 .text-white
+}
+
+.btn-danger:hover {
+	@apply .bg-red-700 .text-white
+}
+
+.btn-success {
+	@apply .bg-green-400 .text-white
+}
+
+.btn-success:hover {
+	@apply .bg-green-500 .text-white
+}
+
+.btn-default {
+	@apply .bg-gray-300 .text-gray-700
+}
+
+.btn-default:hover {
+	@apply .bg-gray-400
+}
+
+/* icon */
+.icon {
+	@apply .inline-flex .items-center
+}
 /* CARDS */
 .card {
 	@apply .rounded .border .shadow 

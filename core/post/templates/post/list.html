@@ -1,0 +1,26 @@
+{% extends '_layouts/1_col.html' %}
+{% import '_macros/icons.html' as i %}
+
+{% block title %} Posts {% endblock %}
+
+{% block page_content %}
+
+	<div class="bg-white p-4 rounded">
+		<div class="flex px-6 my-3 justify-between">
+			<div>
+				<h2 class="text-lg">Posts</h2>
+			</div>
+			{# only logged in users can add #}
+			{% if current_user.is_authenticated %}
+			<div class="flex-none">
+				<div>
+					<a class="btn btn-success" href="{{url_for('.create') }}">
+						New Post
+					</a>
+				</div>
+			</div>
+			{% endif %}
+		</div>
+		{% include '_includes/posts.html' %}
+	</div>
+{% endblock %} 
