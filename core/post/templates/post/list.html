@@ -1,5 +1,6 @@
 {% extends '_layouts/1_col.html' %}
 {% import '_macros/icons.html' as i %}
+{% import '_macros/pagination.html' as p with context %}
 
 {% block title %} Posts {% endblock %}
 
@@ -22,5 +23,6 @@
 			{% endif %}
 		</div>
 		{% include '_includes/posts.html' %}
+		{{ p.pagination_widget(pagination, '.list') }}
 	</div>
 {% endblock %} 

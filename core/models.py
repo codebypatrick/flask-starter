@@ -22,7 +22,7 @@ class User(Base, UserMixin):
     password = db.Column(db.String())
     about_me = db.Column(db.Text)
     confirmed = db.Column(db.Boolean, default=False) 
-    roles = db.relationship('Role', secondary='user_roles')
+    roles = db.relationship('Role', secondary='user_roles', backref=db.backref('users', lazy='dynamic'))
     posts = db.relationship('Post', backref='author', lazy='dynamic')
     comments = db.relationship('Comment', backref='author', lazy='dynamic')
 
@@ -98,7 +98,7 @@ class User(Base, UserMixin):
         return False
     
     def __repr__(self):
-        return '<User: %r>' % self.username 
+        return '<User {}: {}>'.format(self.id, self.username) 
 
 class AnonymousUser(AnonymousUserMixin):
     def has_role(self, requirements):
@@ -130,12 +130,12 @@ class Role(Base):
             
         db.session.commit()
     def __repr__(self):
-        return '<Role: %r>' % self.name
+        return '<Role {}: {}>'.format(self.id, self.name)
 
-class UserRoles(db.Model):
+class UserRoles(Base):
     __tablename__ = 'user_roles'
 
-    id = db.Column(db.Integer, primary_key=True)
+    
     user_id = db.Column(db.Integer, db.ForeignKey('users.id', ondelete='CASCADE'))
     role_id = db.Column(db.Integer, db.ForeignKey('roles.id', ondelete='CASCADE'))
 
@@ -147,6 +147,7 @@ class Post(Base):
     body_html = db.Column(db.Text)
     author_id = db.Column(db.Integer, db.ForeignKey('users.id'))
     comments = db.relationship('Comment', backref='post', lazy='dynamic')
+    tags = db.relationship('Tag', secondary='post_tags', backref=db.backref('posts', lazy='dynamic'))
 
     @staticmethod
     def on_changed_body(target, value, oldvalue, initiator):
@@ -159,7 +160,7 @@ class Post(Base):
                 )
 
     def __repr__(self):
-        return '<Post: %r>' % self.title
+        return '<Post {}: {}>'.format(self.id, self.title[:20])
 
 db.event.listen(Post.body, 'set' , Post.on_changed_body)
 
@@ -179,5 +180,24 @@ class Comment(Base):
         target.body_html = bleach.linkify(
                 bleach.clean( markdown(value, output_format='html'), allowed_tags, strip=True )
                 )
+    def __repr__(self):
+        return '<Comment {}: {}>'.format(self.id, self.body[:20])
 
 db.event.listen(Post.body, 'set', Post.on_changed_body)
+
+class Tag(Base):
+    __tablename__ = 'tags'
+
+    title = db.Column(db.String(64))
+
+    def __repr__(self):
+        return '< Tag {} {} >'.format(self.id, self.title)
+
+class PostTags(Base):
+    __tablename__ = 'post_tags'
+
+    post_id = db.Column(db.Integer, db.ForeignKey('posts.id', ondelete='CASCADE'))
+    tag_id = db.Column(db.Integer, db.ForeignKey('tags.id', ondelete='CASCADE'))
+
+
+

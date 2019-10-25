@@ -1,35 +1,33 @@
-{% macro render_pagination(pagination, endpoint) %}
-<nav class="pagination">
-	<a class="pagination-previous"
-	   {% if not pagination.has_prev %}disabled{% endif %}
-	   href="{% if pagination.has_prev %} {{ url_for(endpoint, page=pagination.page -1, **kwargs) }} {% else %} # {% endif %}">Previous</a>
-	<a class="pagination-next" 
-	   {% if not pagination.has_next %} disabled {% endif %}
-	   href="{% if pagination.has_next %} {{ url_for(endpoint, page=pagination.page +1, **kwargs) }} {% else %} # {%endif%} ">Next</a>
-	<ul class="pagination-list">
+{% macro pagination_widget(pagination, endpoint, show_page_numbers=True) %}
+<ul class="pagination">
+	<li class="{% if not pagination.has_prev %} class='disabled' {% endif %}">
+		<a href="{% if pagination.has_prev %}
+			 {{url_for(endpoint, page = pagination.page -1, **kwargs) }}
+			 {% else %}
+			 # 
+			 {% endif %}">Prev</a>
+	</li>
+	{% if show_page_numbers %}
 		{% for p in pagination.iter_pages() %}
-			{% if p %}
-				{% if p == pagination.page %} 
-					<li><a class="pagination-link is-current" 
-					       href="{{ url_for(endpoint, page=p, **kwargs) }}">{{p}}</a></li>
-				{% else %}
-				<li><a class="pagination-link" 
-				       href="{{ url_for(endpoint, page=p, **kwargs) }}">{{p}}</a></li>
-				{% endif %}
-			{% else %}
-				<li disabled><a href="#">&hellip;</a></li>
-
-			{% endif %}
-
+		{% if p %}
+		{% if p == pagination.page %}
+			<li><a class="bg-green-400 text-white cursor-not-allowed" 
+						href="#">{{p}}</a></li>
+		{% else %}
+			<li><a href="{{ url_for(endpoint, page = p, **kwargs) }}">{{ p }}</a></li>
+		{% endif %}
+		{% else %}
+			<li class="disabled"><a href="#">...</a></li>
+		{% endif %}
 		{% endfor %}
-	</ul>
-</nav>
-
-{# hack to fix bulma pagination li showing disc #}
-<style>
-
-ul.pagination-list > li {
-	list-style: none;
-}
-</style>
+	{% endif %}
+	<li class="{% if not pagination.has_next %} class='disabled' {% endif %}">
+		<a href="{% if pagination.has_next %}
+			 {{ url_for(endpoint, page = pagination.page + 1, **kwargs) }}
+			 {% else %}
+			 #
+			 {% endif %}">Next</a>
+	</li>
+</ul>
 {% endmacro %}
+

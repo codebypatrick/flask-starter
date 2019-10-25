@@ -1,6 +1,6 @@
 import os
 from core import create_app, db
-from core.models import User, Role, Post
+from core.models import User, Role, Post, Tag
 from flask_script import Manager, Shell
 from flask_migrate import Migrate, MigrateCommand
 

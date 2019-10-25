@@ -8,3 +8,6 @@ class PostForm(Form):
 
 class CommentForm(Form):
     body = TextAreaField('Comment', validators=[DataRequired()])
+
+class TagForm(Form):
+    title = StringField('Tag', validators=[DataRequired()])

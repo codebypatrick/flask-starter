@@ -11474,7 +11474,8 @@ textarea { resize: vertical
 }
 
 .btn-primary:hover {
-  background-color: #2b6cb0
+  background-color: #2b6cb0;
+  color: #fff
 }
 
 .btn-danger {
@@ -11483,7 +11484,8 @@ textarea { resize: vertical
 }
 
 .btn-danger:hover {
-  background-color: #c53030
+  background-color: #c53030;
+  color: #fff
 }
 
 .btn-success {
@@ -11537,6 +11539,38 @@ textarea { resize: vertical
   color: #2b6cb0;
   font-weight: 700;
   margin-bottom: 1rem
+}
+
+/* diabled */
+
+.disabled {
+  background-color: #f56565;
+  cursor: not-allowed
+}
+
+/* pagination */
+
+.pagination  {
+  display: flex;
+  justify-content: space-between;
+  margin-left: 1rem;
+  margin-right: 1rem;
+  margin-top: 1rem
+}
+
+.pagination a {
+  border-width: 1px;
+  border-color: #cbd5e0;
+  border-radius: 0.25rem;
+  padding-top: 0.5rem;
+  padding-bottom: 0.5rem;
+  padding-left: 1rem;
+  padding-right: 1rem
+}
+
+.pagination a:hover {
+  background-color: #4299e1;
+  color: #fff
 }
 
 @media (min-width: 640px) {

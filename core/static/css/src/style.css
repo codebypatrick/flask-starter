@@ -107,3 +107,21 @@ textarea { resize: vertical }
 .heading {
 	@apply .text-blue-700 .font-bold .mb-4
 }
+
+/* diabled */
+.disabled {
+	@apply .bg-red-500 .cursor-not-allowed
+}
+
+/* pagination */
+.pagination  {
+	@apply .flex .justify-between .mx-4 .mt-4
+}
+
+.pagination a {
+	@apply .border .border-gray-400 .rounded .py-2 .px-4
+}
+
+.pagination a:hover {
+	@apply .bg-blue-500 .text-white
+}
