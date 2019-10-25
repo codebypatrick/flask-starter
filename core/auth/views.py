@@ -170,7 +170,7 @@ def edit_profile_admin(id):
 
         db.session.add(user)
         db.session.commit()
-        flash('Account {} updated', 'success')
+        flash('Account {} updated'.format(user.username), 'success')
         return redirect(url_for('.profile', username=user.username))
     form.email.data = user.email
     form.username.data = user.username
@@ -182,7 +182,11 @@ def edit_profile_admin(id):
 @auth.route('/user/<username>')
 @login_required
 def profile(username):
-    return username
+    user = User.query.filter_by(username=username).first()
+    if user is None:
+        abort(404)
+
+    return render_template('auth/profile.html', user=user)
 
 ### Remove me later TESTING ####
 @auth.route('/admin')

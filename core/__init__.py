@@ -30,7 +30,9 @@ def register_blueprints(app):
     from .errors import errors
     from .main import main
     from .auth import auth
+    from .post import post
 
     app.register_blueprint(errors)
     app.register_blueprint(main)
     app.register_blueprint(auth)
+    app.register_blueprint(post)

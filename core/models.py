@@ -3,17 +3,28 @@ from flask_login import UserMixin, AnonymousUserMixin
 from werkzeug.security import generate_password_hash, check_password_hash
 from itsdangerous import TimedJSONWebSignatureSerializer as Serializer
 from flask import current_app
+from markdown import markdown
+import bleach
 
-class User(db.Model, UserMixin):
-    __tablename__ = 'users'
+class Base(db.Model):
+
+    __abstract__ = True
 
     id = db.Column(db.Integer, primary_key=True)
+    created = db.Column(db.DateTime, default = db.func.current_timestamp())
+    modified = db.Column(db.DateTime, default = db.func.current_timestamp(), onupdate = db.func.current_timestamp())
+
+class User(Base, UserMixin):
+    __tablename__ = 'users'
+
     username = db.Column(db.String(64), unique=True, index=True)
     email = db.Column(db.String(64), unique=True)
     password = db.Column(db.String())
     about_me = db.Column(db.Text)
     confirmed = db.Column(db.Boolean, default=False) 
-    roles = db.relationship('Role', secondary='user_roles')
+    roles = db.relationship('Role', secondary='user_roles', backref=db.backref('users', lazy='dynamic'))
+    posts = db.relationship('Post', backref='author', lazy='dynamic')
+    comments = db.relationship('Comment', backref='author', lazy='dynamic')
 
     def __init__(self, **kwargs):
         super(User, self).__init__(**kwargs)
@@ -85,6 +96,9 @@ class User(db.Model, UserMixin):
             if role.name == 'Admin':
                 return True
         return False
+    
+    def __repr__(self):
+        return '<User {}: {}>'.format(self.id, self.username) 
 
 class AnonymousUser(AnonymousUserMixin):
     def has_role(self, requirements):
@@ -100,10 +114,9 @@ login_manager.anonymous_user = AnonymousUser
 def load_user(user_id):
     return User.query.get(int(user_id))
 
-class Role(db.Model):
+class Role(Base):
     __tablename__ = 'roles'
 
-    id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(64), unique=True)
 
     @staticmethod
@@ -116,10 +129,75 @@ class Role(db.Model):
             db.session.add(role)
             
         db.session.commit()
+    def __repr__(self):
+        return '<Role {}: {}>'.format(self.id, self.name)
 
-class UserRoles(db.Model):
+class UserRoles(Base):
     __tablename__ = 'user_roles'
 
-    id = db.Column(db.Integer, primary_key=True)
+    
     user_id = db.Column(db.Integer, db.ForeignKey('users.id', ondelete='CASCADE'))
     role_id = db.Column(db.Integer, db.ForeignKey('roles.id', ondelete='CASCADE'))
+
+class Post(Base):
+    __tablename__ = 'posts'
+
+    title = db.Column(db.String(255))
+    body = db.Column(db.Text)
+    body_html = db.Column(db.Text)
+    author_id = db.Column(db.Integer, db.ForeignKey('users.id'))
+    comments = db.relationship('Comment', backref='post', lazy='dynamic')
+    tags = db.relationship('Tag', secondary='post_tags', backref=db.backref('posts', lazy='dynamic'))
+
+    @staticmethod
+    def on_changed_body(target, value, oldvalue, initiator):
+        allowed_tags = ['h2', '<p>', 'a', 'ul', 'li', 'ol', 'b', 'strong']
+
+
+        target.body_html = bleach.linkify(
+                bleach.clean(
+                    markdown(value, output_format='html'), allowed_tags, strip=True)
+                )
+
+    def __repr__(self):
+        return '<Post {}: {}>'.format(self.id, self.title[:20])
+
+db.event.listen(Post.body, 'set' , Post.on_changed_body)
+
+class Comment(Base):
+    __tablename__ = 'comments'
+
+    body = db.Column(db.Text)
+    body_html = db.Column(db.Text)
+    disabled = db.Column(db.Boolean)
+    author_id = db.Column(db.Integer, db.ForeignKey('users.id'))
+    post_id = db.Column(db.Integer, db.ForeignKey('posts.id'))
+
+    @staticmethod
+    def on_changed_body(target, value, oldvalue, initiator):
+        allowed_tags = ['a', 'p', 'strong']
+
+        target.body_html = bleach.linkify(
+                bleach.clean( markdown(value, output_format='html'), allowed_tags, strip=True )
+                )
+    def __repr__(self):
+        return '<Comment {}: {}>'.format(self.id, self.body[:20])
+
+db.event.listen(Post.body, 'set', Post.on_changed_body)
+
+class Tag(Base):
+    __tablename__ = 'tags'
+
+    title = db.Column(db.String(64))
+
+    def __repr__(self):
+        return '< Tag {} {} >'.format(self.id, self.title)
+
+class PostTags(Base):
+    __tablename__ = 'post_tags'
+
+    post_id = db.Column(db.Integer, db.ForeignKey('posts.id', ondelete='CASCADE'))
+    tag_id = db.Column(db.Integer, db.ForeignKey('tags.id', ondelete='CASCADE'))
+
+
+
