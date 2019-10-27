@@ -1,14 +1,14 @@
 {% extends '_layouts/1_col.html' %}
-{% import '_macros/form.html' as f %}
+{% import 'macros.html' as macro %}
 
 {% block title %} Login {% endblock %}
 
 {% block page_content %}
 <div class="bg-white card-md">
 	<h1 class="heading">Login</h1>
-	{{ f.quick_form(form, button_text='Login') }}
+	{{ macro.quick_form(form, button_text='Login') }}
 	
-	<a href="{{url_for('.register')}}">Create Account</a> &middot;
+	<a href="{{url_for('.register')}}">Create Account</a> &bull;
 	<a href="{{url_for('.forgot_password')}}">Forgot Password</a>
 </div>
 {% endblock %}
