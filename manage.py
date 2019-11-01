@@ -1,9 +1,10 @@
+import os
 from core import create_app, db
-from core.models import User, Post
+from core.models import User, Role, Post, Tag
 from flask_script import Manager, Shell
 from flask_migrate import Migrate, MigrateCommand
 
-app = create_app()
+app = create_app(os.getenv('APP_SETTINGS') or 'default')
 manager = Manager(app)
 migrate = Migrate(app, db)
 
@@ -19,16 +20,43 @@ def hello():
 
 @manager.command
 def setup():
+    recreate_db()
+    Role.insert_roles()
+    admin = Role.query.filter_by(name='Admin').first()
+    poster = Role.query.filter_by(name='Poster').first()
+    mod = Role.query.filter_by(name='Moderator').first() 
+
     """ Create default users account change these details in production """
     d = User(
             username='developer',
             email='developer@site.com',
-            password='devpass'
+            password='devpass',
+            confirmed=True
             )
+    
+    d.roles.append(admin)
+
+    a = User(
+            username='ad@min',
+            email='admin@site.com',
+            password='adminpass',
+            confirmed=True
+            )
+    
+    a.roles.append(poster)
+    a.roles.append(mod)
+
+    u = User(
+            username='unc',
+            email='unc@gmail.com',
+            password='123')
+
+    db.session.add(u)
+    db.session.add(a)
     db.session.add(d)
     db.session.commit()
     
-    return 'Default user created'
+    return 'Default users created'
 
 @manager.command
 def create_users(count=100):
@@ -71,7 +99,7 @@ def create_posts(count=100):
                 )
         db.session.add(p)
         db.session.commit()
-        return '{} Posts created'.format(count)
+        return '{} Posts created'.format(Post.query.count())
 
 
 @manager.command

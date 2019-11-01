@@ -1,0 +1,72 @@
+{# Render form label 
+	
+	Params:
+		form field
+#}
+{% macro render_label(f) %}
+	<label for="{{f.id}}" class="form-label">{{ f.label.text }}</label>
+{% endmacro %}
+
+{% macro field_errors(f) %}
+	{% if f.errors %}
+		{% for e in f.errors %}
+			<p class="text-red-500 text-xs italic mt-2">{{ e}}</p>
+		{% endfor %}
+	{% endif %}
+{% endmacro %}
+
+{% macro render_field(f) %}
+	{{ render_label(f) }}
+	{{ f(class_='form-input', **kwargs) }}
+{% endmacro %}
+
+{% macro render_checkbox(f) %}
+<label class="form-label" for="{{ f.id }}">
+	{{ f() }} {{ f.label.text }}
+</label>
+{% endmacro %}
+
+{% macro render_radio(f) %}
+	{% for value, label in field.iter_choices() %}
+		<label class="form-label" for="{{f.id }}">
+			<input id="{{ f.id }}" type="radio" value="{{ value }}"> {{ label }}
+		</label>
+	{% endfor %}
+{% endmacro %}
+ 
+{% macro render_form_inner(f) %}
+	{% if f.type == 'BooleanField' %}
+		{{ render_checkbox(f) }}
+	{% elif f.type == 'RadioField' %}
+		{{ render_radio(f) }}
+	{% elif f.type == 'CSRFTokenField' %}
+		{{ f() }}
+	{% else %}
+		{{ render_field(f) }}
+	{% endif %}
+{% endmacro %}
+
+{% macro quick_form(form, action='', method='POST', enctype=None, button_text='Save') %}
+	<form novalidate
+	      role="form"
+	      class="w-full max-w-sm"
+		{% if action %} action="{{ action }}" {% endif %}
+		{% if method %} method="{{ method }}" {% endif %}
+		{% if enctype %} enctype="{{ enctype }}" {% endif %}
+	>
+		{{ form.hidden_tag() }}
+		{% for f in form %}
+			<div class="mb-4">
+				{{ render_form_inner(f) }}
+				{{ field_errors(f) }}
+			</div>
+		{% endfor %}
+		<div class="mb-4">
+			<button class="btn btn-sm bg-primary" type="submit">{{ button_text }}</button>
+		</div>
+	</form>
+{% endmacro %}
+{# posts #}
+
+
+

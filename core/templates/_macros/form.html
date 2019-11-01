@@ -1,80 +1,81 @@
-{# Render errors and decscrition #}
-{% macro field_description_errors(field) %}
-{% if field.description %}
-	<p class="help">{{field.description}}</p>
-{% endif %}
+{% macro field_description_errors(f) %}
+	{% if f.errors %}
+		{% for e in f.errors %}
+			<p class="text-red-500 text-sm italic">{{ e }}</p>
+		{% endfor %}
+	{% endif %}
 
-{% if field.errors %}
-	{% for e in field.errors %}
-		<p class="help is-danger">{{e}}</p>
-	{% endfor %}
-{% endif %}
-{% endmacro %}
-
-{# Render labels #}
-{% macro field_label(field, label_visible=true) %}
-	{% if (field.type != 'HiddenField' or field.type != 'CSRFTokenField') and label_visible  %}
-		<label class="label" for="{{field.id}}">{{field.label.text}}</label>
+	{% if f.description %}
+		<p class="text-sm text-gray-500">{{ f.description }}</p>
 	{% endif %}
 {% endmacro %}
 
-{# Render field #}
-{% macro render_field(field, label_visible=true) %}
-	<div class="field">
-		{{ field_label(field, label_visible=label_visible) }}
-
-		<div class="control">
-			{{field(class_='input', **kwargs)}}
-		</div>
-
-		{{ field_description_errors(field) }}
-		
-	</div>
+{% macro render_input_field(f) %}
+<div class="mb-4">
+	{% if f.type != 'HiddenField' or f.type != 'CSRFTokenField' %}
+		<label class="field-label" for="{{ f.id}}">{{ f.label.text }}</label>
+	{% endif %}
+	{{ f(class_='field', **kwargs) }}
+	{{ field_description_errors(f) }}
+</div>
 {% endmacro %}
 
-{# Render Textarea #}
-{% macro render_textarea_field(field, label_visible=true) %}
-	<div class="field">
-		{{ field_label(field, label_visible=label_visible) }}
-		<div class="control">
-			{{ field(class_='textarea', **kwargs)}}
-		</div>
-	</div>
+{% macro render_checkbox_field(f) %}
+<div class="mb-4">
+	<label class="field-label" for="{{ f.id }}">
+		{{ f() }} {{ f.label.text }}
+	</label>
+</div>
 {% endmacro %}
 
-{% macro render_checkbox_field(field) %}
-	<div class="field">
-		<label class="checkbox" for="{{field.id}}">
-			{{ field() }} {{field.label.text}}
-		</label>
-	</div>
+{% macro render_textarea_field(f) %}
+<div class="mb-4">
+	<label class="field-label" for="{{f.id}}">{{ f.label.text }}</label>
+	{{ f(class_='field', **kwargs) }}
+	{{ field_description_errors(f) }}
+</div>
 {% endmacro %}
 
-{# Render Form #}
-{% macro render_form(form, action_url='', action_text='Submit', button_class='is-primary') %}
-	<form action="{{action_url}}" method='POST' role="form" novalidate>
-		{{form.hidden_tag() if form.hidden_tag}}
+{% macro render_select_field(f) %}
+<div class="mb-4">
+	<label class="field-label" for="{{f.id}}">{{ f.label.text }}</label>
+	{{ f(class_='field', **kwargs) }}
+	{{ field_description_errors(f) }}
+</div>
+{% endmacro %}
 
-		{% if caller %}
-			{{ caller() }}
-		{% else %}
-			{% for f in form %}
-			{% if f.type in ('StringField', 'TextField', 'PasswordField') %}
+{% macro render_multicheckbox_field(f) %}
+<div class="mb-4">
+	<label class="field-label" for="{{f.id }}">{{ f.label.text }}</label>
+	{{ f() }}
+</div>
+{% endmacro %}
 
-				{{ render_field(f) }}
-			{% elif f.type == 'TextAreaField' %}
-
-				{{ render_textarea_field(f) }}
-
+{% macro quick_form(form, action="", method="post", enctype=None, button_text="Save") %}
+	<form 
+	     {% if action %} action="{{ action }}" {% endif %}
+	     {% if method %} method="{{ method }}" {% endif %}
+	     {% if enctype %} enctype="{{ enctype }}" {% endif %}
+	     novalidate
+	     role="form"
+	     class="mb-4">
+		{{ form.hidden_tag()}}
+		{% for f in form %}
+			{% if f.type in ('StringField', 'PasswordField', 'TextField') %}
+				{{ render_input_field(f) }}
 			{% elif f.type == 'BooleanField' %}
-
-			{{ render_checkbox_field(f) }}
-			 
+				{{ render_checkbox_field(f) }}
+			{% elif f.type == 'TextAreaField' %}
+				{{ render_textarea_field(f) }}
+			{% elif f.type == 'SelectField' %}
+				{{ render_select_field(f) }}
+			{% elif f.type == 'MultiCheckboxField' %}
+				{{ render_multicheckbox_field(f) }}
 			{% else %}
-				{{ render_field(f, label_visible=False) }}
+				{{ f() }}
 			{% endif %}
-			{% endfor %}
-			<button class="button  {{button_class}}">{{action_text}}</button>
-		{% endif %}
+		{% endfor %}
+
+		<button class="btn btn-primary">{{ button_text }}</button>
 	</form>
 {% endmacro %}

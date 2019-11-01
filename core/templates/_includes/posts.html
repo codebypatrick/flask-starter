@@ -1,0 +1,57 @@
+{% import '_macros/icons.html' as i %}
+{# Render Posts  #}
+
+{% for p in posts %}
+<div class="p-2 border-t border-gray-400">
+	<div class="mb-2">
+		<h2 class="text-lg"><a href="{{ url_for('.show', id=p.id)}}">{{ p.title | title }}</a></h2>
+		<div class="text-gray-600 text-sm">
+			{% if p.body_html %}
+				{{ p.body_html | truncate(200) | safe }}
+			{% else %}
+				{{ p.body | truncate(200) }}
+			{% endif %}
+		</div>
+	</div><!-- end post -->
+	<div class="bg-gray-200 p-2  rounded flex justify-between text-xs text-gray-500">
+		<div class="flex items-center">
+			<span> {{i.svg_user() }} </span>
+			<span class="mr-4">{{ p.author.username }}</span>
+			<span> {{i.svg_time() }} </span>
+			<span class=".moment mr-4" title="{{ p.modified }}"></span>
+			{% if p.comments.count()  %}
+			<span> {{ i.svg_comment() }} </span>
+			<span class="mr-4">{{ p.comments.count() }}</span>
+			{% endif %}
+			{% if p.tags %}
+			<span> {{ i.svg_tag() }} </span>
+			{% for t in p.tags %}
+			{% if loop.index < 5 %} 
+			<span class="inline-block bg-gray-400 text-gray-700 rounded-full  px-2 ml-1">{{ t.title }}</span>
+			{% endif %}
+			{% endfor %}
+			{% endif %}
+
+
+		</div>
+		{% if current_user.id == p.author.id or current_user.is_administrator() %}
+		<div class="flex items-center">
+			<a class="btn-xs btn-primary icon mr-2" href="{{ url_for('.update', id=p.id) }}">
+			<span class="mr-1">{{ i.svg_edit() }}</span>
+			Edit
+		</a>
+
+		<a class="btn-xs btn-danger icon" href="{{ url_for('.remove', id=p.id) }}">
+			<span class="mr-1">{{ i.svg_trash() }}</span>
+			Delete
+		</a>
+		</div>
+		{% endif %}
+	</div><!-- end meta -->
+</div><!-- end container -->
+{% endfor %}
+
+{% block js %}
+	<script src="{{url_for('static', filename='js/moment.js')}}"></script>
+	<script src="{{url_for('static', filename='js/dates.js')}}"></script>
+{% endblock %}

@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<link rel="stylesheet" href="{{url_for('static', filename='css/bulma.min.css')}}">
+	{% block head %}{% endblock %}
+	<meta charset="UTF-8">
+	<title>
+		{% if title %}{{title}}{% else %} Application {% endif %}
+	</title>
+</head>
+<body>
+	{% include '_includes/messages.html' %}
+	{% block content %}{% endblock %}
+</body>
+{% block scripts %}{% endblock %}
+</html>

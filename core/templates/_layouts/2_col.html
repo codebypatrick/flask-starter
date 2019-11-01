@@ -1,0 +1,17 @@
+{% extends '_layouts/base.html' %}
+
+{% block navbar %}
+	{% include '_includes/navbar.html' %}
+{% endblock %}
+
+{% block content %}
+	<div class="mx-auto flex mt-5 p-4">
+		<div class="w-3/4">
+			{% block page_content %}{% endblock %}
+		</div>
+
+		<div class="w-1/4">
+			Sidebar
+		</div>
+	</div>
+{% endblock %}
