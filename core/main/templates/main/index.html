@@ -1,7 +1,24 @@
 {% extends '_layouts/1_col.html' %}
+{% import 'macros.html' as macro %}
+
 
 {% block title %} Home {% endblock %}
 
 {% block page_content %}
 	<h1>It works, with layout!</h1>
+
+	
+	<div class="bg-white rounded border shadow-md  mt-5">
+		<div class="card-header rounded-t bg-red-700 border-b border-gray-200 p-2">
+			<h2 class="text-md text-white font-bold ml-4">Card example</h2>
+		</div>
+
+		<div class="card-content p-2 bg-blue-100">
+			Our content can be anything long or short just keep it simple 
+		</div>
+		<div class="card-footer p-2 border-t border-gray-200">
+			<a href="" class="text-xs bg-gray-400 font-bold rounded py-1 px-2">Save</a>
+		</div>
+	</div>
+
 {% endblock %}

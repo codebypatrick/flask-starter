@@ -1,104 +1,62 @@
-## Website Template
-This is a starter for flask web projects
+## Introduction
+This is a Flask boilerplate. The purpose of this project is to get you started Quick and Easy.
 
-## Setup
-Clone repo
+## Built with
+* [Flask](http://flask.pocoo.org) - The web framework
+* [Tailwind css](https://tailwind.com) - Styling utilities
+
+## Features
+* Authentication and authorization 
+* User management
+* Page Management
+* Blog Management
+* Rest api for frontend app development (mobile, electron etc) 
+
+## Prerequisites
+* Python 
+* npm
+
+## Get started
+Clone the git repo
 ```bash
-$ git clone https://github.com/codebypatrick/flask-starter.git
+$ git clone http://github.com/codebypatrick/project.git
 ```
-
-Setup python
+Setup Python, virtualenv and install dependencies
 ```bash
 $ pip install virtualenv
 $ virtualenv venv
 $ source venv/bin/activate
 $ pip install -r requirements.txt
 ```
-
-### Database and migrations
-Run the initialization script
-
-```bash
+Setup Database and Migrations
+``` bash
 $ python manage.py db init
+$ python manage.py db migrate -m 'Initial database setup'
+$ python manage.py db upgrade
+#TODO add seed function
 ```
-
-Create the migration script
+Run the server
+```bash
+# set enviroment variables (development, production, testing)
+$ export APP_SETTINGS='development' 
+#run server
+$ python run.py
+```
+This will initiate a developement server runing on port 5000 visit the site by going to the URL:
 
 ```bash 
-$ python manage.py db migrate -m 'your message here'
+http://localhost:5000
 ```
 
-Apply changes to database
+## Deployment
+TODO
 
-```bash
-$ python manage.py db upgrade
-```
+## License
 
-### Seed data
-Setup default data
-```bash
-$ python manage.py setup
-```
+Distributed under the MIT License. See `LICENSE` for more information.
 
-create users
-```bash
-$ python manage.py create_users
-```
-This will create 100 fake users
+## Contact
 
-create posts
-```bash
-$ python manage.py create_posts
-```
+Patrick Mukasa - <codebypatrick@gmail.com>
 
-## Summary
-The site should have ability to create pages, posts and have user management.
-
-## Pages
-
-
-## Posts
-
-## Users
-
-# Flask Starter
-This is a starter template for flask projects.
-
-## Getting started
-Instructions to get you started
-
-### Prerequistes
-* Python
-* Virtualenv
-
-### Setup and install
-Download or clone the project
-```bash
-$ git clone https://github.com/codebypatrick/flask-starter.git
-```
-
-Setup the enviroment
-```bash
-$ cd flask-starter			# Change into cloned directory
-$ virtualenv venv			# create virtual env
-$ pip install -r requirments.txt
-```
-
-Setup database
-```bash
-$ python manage.py db init				# Initialize migrations
-$ pyhton manage.py db migrate -m 'Intial migration'
-$ python manage.py db upgrade				# Create db tables
-$ python manage.py setup				# Create default application records, should be changed in production
-```
-
-Seed data
-```bash
-$ python manage.py create_users				# Create seed users 100
-$ python manage.py create_posts				# Create seed posts 100
-```
-
-Run the app
-```bash
-$ pyhton wsgi.py
-```
+Project Link: [https://github.com/codebypatrick/flask-starter.git](https://github.com/codebypatrick/flask-starter.git)
