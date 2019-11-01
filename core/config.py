@@ -27,9 +27,9 @@ class DevelopmentConfig(Config):
     MAIL_PORT = 465
     MAIL_USE_TLS = False
     MAIL_USE_SSL = True
-    MAIL_USERNAME = 'codebypatrick@gmail.com'
-    MAIL_DEFAULT_SENDER = 'codebypatrick@gmail.com'
-    MAIL_PASSWORD = '@$$patrick2019'
+    MAIL_USERNAME = 'codebypatrick@gmail.com' # os env
+    MAIL_DEFAULT_SENDER = 'codebypatrick@gmail.com' # os env
+    MAIL_PASSWORD = '@$$patrick2019' # os env
 
 
 class TestingConfig(Config):

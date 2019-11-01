@@ -1,32 +1,3 @@
-{# Renders headers 
-	- can be called {{ macro.render_header(text='YOUR HEADING') }}  or
-	{% call macro.render_header(text='YOUR HEADING') %} YOUR CONTENT HERE {% endcall %}
-
-	Params:
-		text - Header text
-#}
-{% macro render_header(text, border=False) %}
-	<div class="flex justify-between items-baseline {% if border %} border-b  border-gray-500 {% endif %}"> 
-		<h2 class="heading">{{ text }}</h2>
-		<div>
-			{% if caller %} {{ caller() }} {% endif %}
-		</div>
-	</div>
-{% endmacro %}
-
-
-{# Renders card 
-	- called {% call macro.render_card() %} YOUR CONTENT HERE {% endcall %}
-	Params:
-		class_ - extra classes 
-#}
-{% macro render_card(class_='') %}
-<div class="card {{ class_ }}">
-	{% if caller %} {{ caller() }} {% endif %}
-</div>
-{% endmacro %}
-
-{# forms #}
 {# Render form label 
 	
 	Params:
@@ -90,7 +61,9 @@
 				{{ field_errors(f) }}
 			</div>
 		{% endfor %}
-		<button class="btn btn-sm bg-primary" type="submit">{{ button_text }}</button>
+		<div class="mb-4">
+			<button class="btn btn-sm bg-primary" type="submit">{{ button_text }}</button>
+		</div>
 	</form>
 {% endmacro %}
 {# posts #}

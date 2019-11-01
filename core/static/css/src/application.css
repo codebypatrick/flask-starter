@@ -80,7 +80,22 @@
  * Cards
  */
 .card {
-	@apply border mx-auto p-6 rounded shadow
+	@apply rounded border mt-5 shadow  
+}
+
+.card-header {
+	@apply rounded-t border-b p-4
+}
+.card-header h2 {
+	@apply font-bold ml-4 tracking-wide text-lg uppercase 
+}
+
+.card-content {
+	@apply p-4
+}
+
+.card-footer {
+	@apply rounded-b border-t p-4
 }
 
 /*
@@ -96,7 +111,7 @@
 }
 
 .form-input {
-	@apply appearance-none w-full py-2 px-3 rounded border bg-gray-200 border-gray-200 text-gray-700 leading-tight
+	@apply appearance-none w-full py-2 px-3 rounded border bg-gray-400 border-gray-200 text-gray-700 leading-tight
 }
 
 .form-input:focus {
